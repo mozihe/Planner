@@ -20,13 +20,10 @@ std::vector<cv::Point> DijkstraPlanner::plan() {
     distance[start_] = 0.0;
 
 
-    const std::vector<cv::Point> directions = {
-        {1, 0}, {0, 1}, {-1, 0}, {0, -1},
-        {1, 1}, {1, -1}, {-1, 1}, {-1, -1}
-    };
+    const std::vector<cv::Point> directions = {{1, 0}, {0, 1}, {-1, 0}, {0, -1}, {1, 1}, {1, -1}, {-1, 1}, {-1, -1}};
 
     while (!pq.empty()) {
-        auto[currentDistance, current] = pq.top();
+        auto [currentDistance, current] = pq.top();
         pq.pop();
         visited.at<uchar>(current) = 1;
 

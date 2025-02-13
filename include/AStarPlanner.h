@@ -31,4 +31,4 @@ private:
     static double heuristic(const cv::Point &a, const cv::Point &b);
 };
 
-#endif //ASTARPLANNER_H
+#endif // ASTARPLANNER_H

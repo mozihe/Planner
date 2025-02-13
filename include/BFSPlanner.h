@@ -21,4 +21,4 @@ private:
     bool isValid(const cv::Point &p, const cv::Mat &visited);
 };
 
-#endif //BFSPLANNER_H
+#endif // BFSPLANNER_H

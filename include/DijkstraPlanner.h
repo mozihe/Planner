@@ -20,7 +20,7 @@ private:
     };
 
     struct ComparePairs {
-        bool operator()(const std::pair<double, cv::Point>& a, const std::pair<double, cv::Point>& b) const {
+        bool operator()(const std::pair<double, cv::Point> &a, const std::pair<double, cv::Point> &b) const {
             return a.first > b.first;
         }
     };
@@ -28,4 +28,4 @@ private:
     bool isValid(const cv::Point &p, const cv::Mat &visited);
 };
 
-#endif //DIJKSTRAPLANNER_H
+#endif // DIJKSTRAPLANNER_H

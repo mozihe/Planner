@@ -26,9 +26,22 @@ private:
         }
     };
 
+    std::map<cv::Point, cv::Point, cmpPoints> parent;
+    std::map<cv::Point, double, cmpPoints> distance;
+
     bool isValid(const cv::Point &p, const cv::Mat &visited);
 
     static double heuristic(const cv::Point &a, const cv::Point &b);
+
+    std::vector<std::tuple<double, double, cv::Point>> getJumpNeighbors(const cv::Point &p);
+
+    bool isValidPoint(const cv::Point &p);
+
+    bool hasForceNeighbor(const cv::Point &p, const cv::Point &dir);
+
+    std::vector<cv::Point> getForceNeighbor(const cv::Point &p, const cv::Point &dir);
+
+    cv::Point jump(const cv::Point &p, const cv::Point &dir);
 };
 
-#endif //JPSPLANNER_H
+#endif // JPSPLANNER_H

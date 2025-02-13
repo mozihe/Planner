@@ -11,15 +11,16 @@
 class BasePlanner {
 public:
     BasePlanner() = default;
-    virtual ~BasePlanner()= default;
+    virtual ~BasePlanner() = default;
     virtual std::vector<cv::Point> plan() = 0;
     void setMap(const cv::Mat &map);
     void setStart(const cv::Point &start);
     void setGoal(const cv::Point &goal);
+
 protected:
     cv::Mat map_;
     cv::Point start_;
     cv::Point goal_;
 };
 
-#endif //BASE_PLANNER_H
+#endif // BASE_PLANNER_H

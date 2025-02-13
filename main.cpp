@@ -1,11 +1,12 @@
-#include <BasePlanner.h>
-#include <iostream>
-#include <chrono>
-#include <opencv2/opencv.hpp>
-#include <DFSPlanner.h>
-#include <BFSPlanner.h>
-#include <DijkstraPlanner.h>
 #include <AStarPlanner.h>
+#include <BFSPlanner.h>
+#include <BasePlanner.h>
+#include <DFSPlanner.h>
+#include <DijkstraPlanner.h>
+#include <JPSPlanner.h>
+#include <chrono>
+#include <iostream>
+#include <opencv2/opencv.hpp>
 
 
 bool rePlan = false;
@@ -14,6 +15,7 @@ cv::Point goal;
 void onMouse(int event, int x, int y, int flags, void *userdata) {
     if (event == cv::EVENT_LBUTTONDOWN) {
         goal = cv::Point(x, y);
+        std::cout << "Goal: " << goal << std::endl;
         rePlan = true;
     }
 }
@@ -27,7 +29,7 @@ int main() {
 
 
     cv::Point start(100, 144);
-    BasePlanner *planner = new AStarPlanner();
+    BasePlanner *planner = new JPSPlanner();
 
     planner->setMap(map);
     planner->setStart(start);
@@ -48,10 +50,14 @@ int main() {
             std::chrono::steady_clock::time_point begin = std::chrono::steady_clock::now();
             auto path = planner->plan();
             std::chrono::steady_clock::time_point end = std::chrono::steady_clock::now();
-            std::cout << "Time difference = " << std::chrono::duration_cast<std::chrono::milliseconds>(end - begin).count() << "[ms]" << std::endl;
+
+            std::cout << "Time difference = "
+                      << std::chrono::duration_cast<std::chrono::milliseconds>(end - begin).count() << "[ms]"
+                      << std::endl;
             display = map.clone();
             cv::cvtColor(display, display, cv::COLOR_GRAY2BGR);
-            for (const auto &point : path) {
+
+            for (const auto &point: path) {
                 cv::circle(display, point, 1, cv::Scalar(255, 0, 0), -1);
             }
             rePlan = false;

@@ -56,6 +56,6 @@ bool AStarPlanner::isValid(const cv::Point &p, const cv::Mat &visited) {
 double AStarPlanner::heuristic(const cv::Point &a, const cv::Point &b) {
     // return std::sqrt(std::pow(a.x - b.x, 2) + std::pow(a.y - b.y, 2));
     int dx = std::abs(a.x - b.x);
-    int dy = std::abs(a.x - b.x);
+    int dy = std::abs(a.y - b.y);
     return static_cast<double>(dx + dy) + (std::sqrt(2) - 2.0) * std::min(dx, dy);
 }
