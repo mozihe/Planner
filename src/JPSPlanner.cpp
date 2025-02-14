@@ -1,7 +1,7 @@
 //
 // Created by mozihe on 25-2-10.
 //
-#include <JPSPlanner.h>
+#include "JPSPlanner.h"
 
 std::vector<cv::Point> JPSPlanner::plan() {
     std::vector<cv::Point> path;

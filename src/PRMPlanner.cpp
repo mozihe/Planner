@@ -36,9 +36,9 @@ void PRMPlanner::generateRoadmap() {
 
     std::set<std::pair<cv::Point, cv::Point>, PointPairCompare> edgeSet;
 
-    for (const auto& node : nodes_) {
+    for (const auto &node: nodes_) {
         auto neighbors = tree.kNearestNeighbors(node, k_neighbors_);
-        for (const auto& neighbor : neighbors) {
+        for (const auto &neighbor: neighbors) {
             if (node != neighbor && cv::norm(node - neighbor) <= max_distance_ && !checkCollision(node, neighbor)) {
                 if (node.x < neighbor.x || (node.x == neighbor.x && node.y < neighbor.y)) {
                     edgeSet.emplace(node, neighbor);
@@ -49,7 +49,7 @@ void PRMPlanner::generateRoadmap() {
         }
     }
 
-    for (const auto& edge : edgeSet) {
+    for (const auto &edge: edgeSet) {
         edges_.emplace_back(edge.first, edge.second);
     }
 }
@@ -59,9 +59,10 @@ std::vector<cv::Point> PRMPlanner::findPath() {
     if (isValid(start_) && isValid(goal_)) {
         std::unordered_map<cv::Point, cv::Point> cameFrom;
         std::unordered_map<cv::Point, double> gScore, fScore;
-        std::priority_queue<std::pair<double, cv::Point>, std::vector<std::pair<double, cv::Point>>, PairCompare> openSet;
+        std::priority_queue<std::pair<double, cv::Point>, std::vector<std::pair<double, cv::Point>>, PairCompare>
+                openSet;
 
-        for (const auto& node : nodes_) {
+        for (const auto &node: nodes_) {
             gScore[node] = std::numeric_limits<double>::infinity();
             fScore[node] = std::numeric_limits<double>::infinity();
         }
@@ -84,7 +85,7 @@ std::vector<cv::Point> PRMPlanner::findPath() {
 
             openSet.pop();
 
-            for (const auto& edge : edges_) {
+            for (const auto &edge: edges_) {
                 cv::Point neighbor;
                 if (edge.first == current) {
                     neighbor = edge.second;
@@ -104,17 +105,19 @@ std::vector<cv::Point> PRMPlanner::findPath() {
             }
         }
     }
-    return path; // 返回空路径表示未找到
+    return path;
 }
-double PRMPlanner::heuristic(const cv::Point& a, const cv::Point& b) const {
-    return std::abs(a.x - b.x) + std::abs(a.y - b.y);
+double PRMPlanner::heuristic(const cv::Point &a, const cv::Point &b) const {
+    int dx = std::abs(a.x - b.x);
+    int dy = std::abs(a.y - b.y);
+    return static_cast<double>(dx + dy) + (std::sqrt(2) - 2.0) * std::min(dx, dy);
 }
 
 bool PRMPlanner::isValid(const cv::Point &point) const {
     return point.x >= 0 && point.x < map_.cols && point.y >= 0 && point.y < map_.rows && map_.at<uchar>(point) == 255;
 }
 
-bool PRMPlanner::checkCollision(const cv::Point& start, const cv::Point& end) const {
+bool PRMPlanner::checkCollision(const cv::Point &start, const cv::Point &end) const {
     cv::LineIterator it(map_, start, end);
     for (int i = 0; i < it.count; ++i, ++it) {
         if (map_.at<uchar>(it.pos()) != 255) {

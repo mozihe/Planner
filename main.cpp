@@ -1,14 +1,12 @@
-#include <AStarPlanner.h>
-#include <BFSPlanner.h>
-#include <BasePlanner.h>
-#include <DFSPlanner.h>
-#include <DijkstraPlanner.h>
-#include <JPSPlanner.h>
-#include <chrono>
-#include <iostream>
-#include <opencv2/opencv.hpp>
-#include <PRMPlanner.h>
+#include "BasePlanner.h"
 
+#include "AStarPlanner.h"
+#include "BFSPlanner.h"
+#include "DFSPlanner.h"
+#include "DijkstraPlanner.h"
+#include "JPSPlanner.h"
+#include "PRMPlanner.h"
+#include "GreedyPlanner.h"
 
 bool rePlan = false;
 cv::Point goal;
@@ -30,7 +28,7 @@ int main() {
 
 
     cv::Point start(100, 144);
-    BasePlanner *planner = new PRMPlanner();
+    BasePlanner *planner = new GreedyPlanner();
 
     planner->setMap(map);
     planner->setStart(start);

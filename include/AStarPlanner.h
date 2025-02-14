@@ -5,8 +5,7 @@
 #ifndef ASTARPLANNER_H
 #define ASTARPLANNER_H
 
-#include <BasePlanner.h>
-#include <opencv2/opencv.hpp>
+#include "BasePlanner.h"
 
 class AStarPlanner : public BasePlanner {
 public:

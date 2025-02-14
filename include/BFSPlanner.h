@@ -5,7 +5,7 @@
 #ifndef BFSPLANNER_H
 #define BFSPLANNER_H
 
-#include <BasePlanner.h>
+#include "BasePlanner.h"
 
 class BFSPlanner : public BasePlanner {
 public:

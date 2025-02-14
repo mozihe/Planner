@@ -1,17 +1,21 @@
 //
-// Created by mozihe on 25-2-10.
+// Created by mozihe on 25-2-7.
 //
 
-#ifndef JPSPLANNER_H
-#define JPSPLANNER_H
+#ifndef EXTENDASTARPLANNER_H
+#define EXTENDASTARPLANNER_H
 
 #include "BasePlanner.h"
 
-class JPSPlanner : public BasePlanner {
+class ExtendAStarPlanner : public BasePlanner {
 public:
+    ExtendAStarPlanner(float a = 1.0, float b = 1.0) : a(a), b(b) {}
+
     std::vector<cv::Point> plan() override;
 
 private:
+    float a, b;
+
     struct cmpPoints {
         bool operator()(const cv::Point &a, const cv::Point &b) const {
             return std::tie(a.x, a.y) < std::tie(b.x, b.y);
@@ -25,22 +29,9 @@ private:
         }
     };
 
-    std::map<cv::Point, cv::Point, cmpPoints> parent;
-    std::map<cv::Point, double, cmpPoints> distance;
-
     bool isValid(const cv::Point &p, const cv::Mat &visited);
 
     static double heuristic(const cv::Point &a, const cv::Point &b);
-
-    std::vector<std::tuple<double, double, cv::Point>> getJumpNeighbors(const cv::Point &p);
-
-    bool isValidPoint(const cv::Point &p);
-
-    bool hasForceNeighbor(const cv::Point &p, const cv::Point &dir);
-
-    std::vector<cv::Point> getForceNeighbor(const cv::Point &p, const cv::Point &dir);
-
-    cv::Point jump(const cv::Point &p, const cv::Point &dir);
 };
 
-#endif // JPSPLANNER_H
+#endif // EXTENDASTARPLANNER_H

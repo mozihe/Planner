@@ -5,26 +5,25 @@
 #ifndef PRMPLANNER_H
 #define PRMPLANNER_H
 
+#include <random>
 #include "BasePlanner.h"
 #include "KDTree.h"
-#include <random>
 
 namespace std {
-    template <>
+    template<>
     struct hash<cv::Point> {
-        size_t operator()(const cv::Point& p) const noexcept {
+        size_t operator()(const cv::Point &p) const noexcept {
             size_t h1 = hash<int>{}(p.x);
             size_t h2 = hash<int>{}(p.y);
             return h1 ^ (h2 << 1);
         }
     };
-}
+} // namespace std
 
 
 class PRMPlanner : public BasePlanner {
 public:
-    PRMPlanner(double target_density = 0.005, double factor = 3.0)
-        : target_density_(target_density), factor_(factor) {}
+    PRMPlanner(double target_density = 0.005, double factor = 3.0) : target_density_(target_density), factor_(factor) {}
 
     ~PRMPlanner() override = default;
 
@@ -32,18 +31,21 @@ public:
 
 
 private:
-
     struct PairCompare {
-        bool operator()(const std::pair<double, cv::Point_<int>>& lhs, const std::pair<double, cv::Point_<int>>& rhs) const {
+        bool operator()(const std::pair<double, cv::Point_<int>> &lhs,
+                        const std::pair<double, cv::Point_<int>> &rhs) const {
             return lhs.first > rhs.first;
         }
     };
 
     struct PointPairCompare {
-        bool operator()(const std::pair<cv::Point, cv::Point>& a, const std::pair<cv::Point, cv::Point>& b) const {
-            if (a.first.x != b.first.x) return a.first.x < b.first.x;
-            if (a.first.y != b.first.y) return a.first.y < b.first.y;
-            if (a.second.x != b.second.x) return a.second.x < b.second.x;
+        bool operator()(const std::pair<cv::Point, cv::Point> &a, const std::pair<cv::Point, cv::Point> &b) const {
+            if (a.first.x != b.first.x)
+                return a.first.x < b.first.x;
+            if (a.first.y != b.first.y)
+                return a.first.y < b.first.y;
+            if (a.second.x != b.second.x)
+                return a.second.x < b.second.x;
             return a.second.y < b.second.y;
         }
     };
@@ -60,9 +62,9 @@ private:
 
     void generateRoadmap();
     std::vector<cv::Point> findPath();
-    double heuristic(const cv::Point& a, const cv::Point& b) const;
+    double heuristic(const cv::Point &a, const cv::Point &b) const;
     bool isValid(const cv::Point &point) const;
-    bool checkCollision(const cv::Point& start, const cv::Point& end) const;
+    bool checkCollision(const cv::Point &start, const cv::Point &end) const;
 };
 
-#endif //PRMPLANNER_H
+#endif // PRMPLANNER_H

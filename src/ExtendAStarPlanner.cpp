@@ -1,9 +1,9 @@
 //
 // Created by mozihe on 25-2-7.
 //
-#include "AStarPlanner.h"
+#include "ExtendAStarPlanner.h"
 
-std::vector<cv::Point> AStarPlanner::plan() {
+std::vector<cv::Point> ExtendAStarPlanner::plan() {
     std::vector<cv::Point> path;
     if (map_.empty() || start_ == goal_)
         return path;
@@ -14,7 +14,7 @@ std::vector<cv::Point> AStarPlanner::plan() {
     std::map<cv::Point, cv::Point, cmpPoints> parent;
     std::map<cv::Point, double, cmpPoints> distance;
 
-    pq.emplace(heuristic(start_, goal_), 0.0, start_);
+    pq.emplace(a * heuristic(start_, goal_), 0.0, start_);
     distance[start_] = 0.0;
 
     const std::vector<cv::Point> directions = {{1, 0}, {0, 1}, {-1, 0}, {0, -1}, {1, 1}, {1, -1}, {-1, 1}, {-1, -1}};
@@ -38,7 +38,7 @@ std::vector<cv::Point> AStarPlanner::plan() {
             cv::Point next = current + dir;
             double newDistance = currentDistance + std::sqrt(std::pow(dir.x, 2) + std::pow(dir.y, 2));
             if (isValid(next, visited) && (!distance.contains(next) || newDistance < distance[next])) {
-                pq.emplace(heuristic(next, goal_) + newDistance, newDistance, next);
+                pq.emplace(a * heuristic(next, goal_) + b * newDistance, newDistance, next);
                 parent[next] = current;
                 distance[next] = newDistance;
             }
@@ -48,12 +48,12 @@ std::vector<cv::Point> AStarPlanner::plan() {
     return {};
 }
 
-bool AStarPlanner::isValid(const cv::Point &p, const cv::Mat &visited) {
+bool ExtendAStarPlanner::isValid(const cv::Point &p, const cv::Mat &visited) {
     return p.x >= 0 && p.x < map_.cols && p.y >= 0 && p.y < map_.rows && map_.at<uchar>(p) == 255 &&
            visited.at<uchar>(p) == 0;
 }
 
-double AStarPlanner::heuristic(const cv::Point &a, const cv::Point &b) {
+double ExtendAStarPlanner::heuristic(const cv::Point &a, const cv::Point &b) {
     // return std::sqrt(std::pow(a.x - b.x, 2) + std::pow(a.y - b.y, 2));
     int dx = std::abs(a.x - b.x);
     int dy = std::abs(a.y - b.y);

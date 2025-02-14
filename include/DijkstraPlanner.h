@@ -5,8 +5,7 @@
 #ifndef DIJKSTRAPLANNER_H
 #define DIJKSTRAPLANNER_H
 
-#include <BasePlanner.h>
-#include <opencv2/opencv.hpp>
+#include "BasePlanner.h"
 
 class DijkstraPlanner : public BasePlanner {
 public:
