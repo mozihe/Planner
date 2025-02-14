@@ -9,6 +9,7 @@
 #include "GreedyPlanner.h"
 #include "ExtendAStarPlanner.h"
 #include "MonkeyPlanner.h"
+#include "RRTPlanner.h"
 
 bool rePlan = false;
 cv::Point goal;
@@ -30,7 +31,7 @@ int main() {
 
 
     cv::Point start(100, 144);
-    BasePlanner *planner = new MonkeyPlanner();
+    BasePlanner *planner = new RRTPlanner();
 
     planner->setMap(map);
     planner->setStart(start);
