@@ -7,6 +7,7 @@
 #include <chrono>
 #include <iostream>
 #include <opencv2/opencv.hpp>
+#include <PRMPlanner.h>
 
 
 bool rePlan = false;
@@ -29,7 +30,7 @@ int main() {
 
 
     cv::Point start(100, 144);
-    BasePlanner *planner = new JPSPlanner();
+    BasePlanner *planner = new PRMPlanner();
 
     planner->setMap(map);
     planner->setStart(start);
@@ -47,16 +48,15 @@ int main() {
 
         if (rePlan) {
             planner->setGoal(goal);
-            std::chrono::steady_clock::time_point begin = std::chrono::steady_clock::now();
+            std::chrono::high_resolution_clock::time_point begin = std::chrono::high_resolution_clock::now();
             auto path = planner->plan();
-            std::chrono::steady_clock::time_point end = std::chrono::steady_clock::now();
-
+            std::chrono::high_resolution_clock::time_point end = std::chrono::high_resolution_clock::now();
             std::cout << "Time difference = "
                       << std::chrono::duration_cast<std::chrono::milliseconds>(end - begin).count() << "[ms]"
                       << std::endl;
             display = map.clone();
             cv::cvtColor(display, display, cv::COLOR_GRAY2BGR);
-
+            std::cout << "Path length: " << path.size() << std::endl;
             for (const auto &point: path) {
                 cv::circle(display, point, 1, cv::Scalar(255, 0, 0), -1);
             }
