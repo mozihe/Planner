@@ -35,12 +35,16 @@ std::vector<cv::Point> RRTStarPlanner::plan() {
             continue;
         }
 
+        if (new_node == goal_) {
+            continue;
+        }
+
         std::vector<cv::Point> neighbors = findNearNodes(new_node, rewire_r_);
 
         cv::Point min_node = nearest_node;
         double min_cost = cost_map_[nearest_node] + cv::norm(nearest_node - new_node);
 
-        for (const auto &node : neighbors) {
+        for (const auto &node: neighbors) {
             if (!isValidMove(node, new_node)) {
                 continue;
             }
@@ -56,7 +60,7 @@ std::vector<cv::Point> RRTStarPlanner::plan() {
         parent_map_[new_node] = min_node;
         cost_map_[new_node] = min_cost;
 
-        for (const auto& node : neighbors) {
+        for (const auto &node: neighbors) {
             double rewire_cost = cost_map_[new_node] + cv::norm(node - new_node);
             if (rewire_cost < cost_map_[node] && isValidMove(new_node, node)) {
                 parent_map_[node] = new_node;
@@ -66,15 +70,13 @@ std::vector<cv::Point> RRTStarPlanner::plan() {
 
         if (cv::norm(new_node - goal_) < step_size_ && isValidMove(new_node, goal_)) {
 
-            if (new_node != goal_) {
-                parent_map_[goal_] = new_node;
-                std::vector<cv::Point> current_path = tracePath(goal_);
-                double current_cost = cost_map_[goal_];
+            parent_map_[goal_] = new_node;
+            std::vector<cv::Point> current_path = tracePath(goal_);
+            double current_cost = cost_map_[goal_];
 
-                if (current_cost < best_cost) {
-                    best_cost = current_cost;
-                    best_path = current_path;
-                }
+            if (current_cost < best_cost) {
+                best_cost = current_cost;
+                best_path = current_path;
             }
         }
     }
@@ -88,10 +90,11 @@ cv::Point RRTStarPlanner::sampleRandomPoint() {
     return {dis_x(gen), dis_y(gen)};
 }
 
-cv::Point RRTStarPlanner::nearestNode(const std::map<cv::Point, cv::Point, cmpPoints>& tree, const cv::Point& random_point) {
+cv::Point RRTStarPlanner::nearestNode(const std::map<cv::Point, cv::Point, cmpPoints> &tree,
+                                      const cv::Point &random_point) {
     cv::Point nearest = tree.begin()->first;
     double min_dist = cv::norm(nearest - random_point);
-    for (const auto& node : tree) {
+    for (const auto &node: tree) {
         double dist = cv::norm(node.first - random_point);
         if (dist < min_dist) {
             min_dist = dist;
@@ -101,7 +104,7 @@ cv::Point RRTStarPlanner::nearestNode(const std::map<cv::Point, cv::Point, cmpPo
     return nearest;
 }
 
-bool RRTStarPlanner::isValidMove(const cv::Point& start, const cv::Point& end) {
+bool RRTStarPlanner::isValidMove(const cv::Point &start, const cv::Point &end) {
     cv::LineIterator it(map_, start, end, 8);
     for (int i = 0; i < it.count; ++i, ++it) {
         if (map_.at<uchar>(it.pos()) == 0) {
@@ -111,9 +114,10 @@ bool RRTStarPlanner::isValidMove(const cv::Point& start, const cv::Point& end) {
     return true;
 }
 
-std::vector<cv::Point> RRTStarPlanner::tracePath(const cv::Point& goal) {
+std::vector<cv::Point> RRTStarPlanner::tracePath(const cv::Point &goal) {
     std::vector<cv::Point> path;
-    if (!parent_map_.contains(goal)) return path;
+    if (!parent_map_.contains(goal))
+        return path;
 
     cv::Point current = goal;
     while (current != start_) {
@@ -130,11 +134,12 @@ bool RRTStarPlanner::isValid(const cv::Point &point) const {
     return point.x >= 0 && point.x < map_.cols && point.y >= 0 && point.y < map_.rows && map_.at<uchar>(point) == 255;
 }
 
-std::vector<cv::Point> RRTStarPlanner::findNearNodes(const cv::Point& query, double radius) {
+std::vector<cv::Point> RRTStarPlanner::findNearNodes(const cv::Point &query, double radius) {
     std::vector<cv::Point> candidates = tree_.kNearestNeighbors(query, 20);
     std::vector<cv::Point> result;
-    for (const auto& p : candidates) {
-        if (cv::norm(p - query) <= radius) result.push_back(p);
+    for (const auto &p: candidates) {
+        if (cv::norm(p - query) <= radius)
+            result.push_back(p);
     }
     return result;
 }
