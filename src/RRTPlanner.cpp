@@ -18,7 +18,7 @@ std::vector<cv::Point> RRTPlanner::plan() {
         cv::Point random_point = sampleRandomPoint();
         cv::Point nearest = nearestNode(tree, random_point);
         cv::Point new_node = nearest + step_size_ * (random_point - nearest) / cv::norm(random_point - nearest);
-        if (isValidMove(nearest, new_node) && tree.find(new_node) == tree.end()) {
+        if (isValidMove(nearest, new_node) && !tree.contains(new_node)) {
             tree[new_node] = nearest;
             if (cv::norm(new_node - goal_) < step_size_) {
                 if (isValidMove(new_node, goal_)) {

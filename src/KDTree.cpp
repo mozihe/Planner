@@ -68,3 +68,71 @@ void KDTree::kNearestNeighbors(KDNode *node, const cv::Point &query, int k, int 
 bool KDTree::compareDistance(const std::pair<cv::Point, double> &a, const std::pair<cv::Point, double> &b) {
     return a.second > b.second;
 }
+
+void KDTree::add(const cv::Point &point) { root_ = addNode(root_, point, 0); }
+
+KDNode *KDTree::addNode(KDNode *node, const cv::Point &point, int depth) {
+    if (!node)
+        return new KDNode(point);
+
+    int axis = depth % 2;
+    if ((axis == 0 && point.x < node->point.x) || (axis == 1 && point.y < node->point.y)) {
+        node->left = addNode(node->left, point, depth + 1);
+    } else {
+        node->right = addNode(node->right, point, depth + 1);
+    }
+    return node;
+}
+
+bool KDTree::contains(const cv::Point &point) const {
+    return containsHelper(root_, point, 0);
+}
+
+bool KDTree::containsHelper(KDNode* node, const cv::Point& target, int depth) const {
+    if (!node) return false;
+
+    if (node->point == target)
+        return true;
+
+    int axis = depth % 2;
+    bool targetIsLeft;
+    if (axis == 0) {
+        targetIsLeft = (target.x < node->point.x);
+    } else {
+        targetIsLeft = (target.y < node->point.y);
+    }
+
+    if (targetIsLeft) {
+        if (containsHelper(node->left, target, depth + 1))
+            return true;
+    } else {
+        if (containsHelper(node->right, target, depth + 1))
+            return true;
+    }
+
+
+    bool needsCheckOther = (axis == 0) ? (target.x == node->point.x)
+                                       : (target.y == node->point.y);
+    if (needsCheckOther) {
+        return containsHelper(targetIsLeft ? node->right : node->left, target, depth + 1);
+    }
+
+    return false;
+}
+
+KDTree::~KDTree() {
+    clearTree(root_);
+}
+
+void KDTree::clear() {
+    clearTree(root_);
+    root_ = nullptr;
+}
+
+void KDTree::clearTree(KDNode *node) {
+    if (node) {
+        clearTree(node->left);
+        clearTree(node->right);
+        delete node;
+    }
+}
