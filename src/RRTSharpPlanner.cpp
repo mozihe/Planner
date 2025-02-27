@@ -159,10 +159,7 @@ std::vector<cv::Point> RRTSharpPlanner::findNearNodes(const cv::Point &query, do
 
 
 double RRTSharpPlanner::heuristic(const cv::Point &a, const cv::Point &b) {
-    // return std::sqrt(std::pow(a.x - b.x, 2) + std::pow(a.y - b.y, 2));
-    int dx = std::abs(a.x - b.x);
-    int dy = std::abs(a.y - b.y);
-    return static_cast<double>(dx + dy) + (std::sqrt(2) - 2.0) * std::min(dx, dy);
+    return std::sqrt(std::pow(a.x - b.x, 2) + std::pow(a.y - b.y, 2));
 }
 
 

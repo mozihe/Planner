@@ -12,8 +12,8 @@
 
 class RRTSharpPlanner : public BasePlanner {
 public:
-    RRTSharpPlanner(double step_size = 10.0, int max_iter = 100000, double rewire_r = 20.0,
-                  double goal_bias = 0.1, double anchor_radius = 30.0)
+    RRTSharpPlanner(double step_size = 20.0, int max_iter = 100000, double rewire_r = 25.0,
+                  double goal_bias = 0.1)
         : step_size_(step_size), max_iter_(max_iter), rewire_r_(rewire_r),goal_bias_(goal_bias), gen(std::random_device{}()){}
 
     std::vector<cv::Point> plan() override;
