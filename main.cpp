@@ -11,6 +11,7 @@
 #include "MonkeyPlanner.h"
 #include "RRTPlanner.h"
 #include "RRTStarPlanner.h"
+#include "RRTSharpPlanner.h"
 
 bool rePlan = false;
 cv::Point goal;
@@ -32,7 +33,7 @@ int main() {
 
 
     cv::Point start(100, 144);
-    BasePlanner *planner = new RRTStarPlanner();
+    BasePlanner *planner = new RRTSharpPlanner();
 
     planner->setMap(map);
     planner->setStart(start);

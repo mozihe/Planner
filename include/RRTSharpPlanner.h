@@ -2,18 +2,19 @@
 // Created by mozihe on 25-2-14.
 //
 
-#ifndef RRTSTARPLANNER_H
-#define RRTSTARPLANNER_H
+#ifndef RRTSHARPPLANNER_H
+#define RRTSHARPPLANNER_H
 
 #include "BasePlanner.h"
 
 #include "KDTree.h"
 #include <random>
 
-class RRTStarPlanner : public BasePlanner {
+class RRTSharpPlanner : public BasePlanner {
 public:
-    RRTStarPlanner(double step_size = 10.0, int max_iter = 100000, double rewire_r = 20.0)
-        : step_size_(step_size), max_iter_(max_iter), rewire_r_(rewire_r), gen(std::random_device{}()){}
+    RRTSharpPlanner(double step_size = 10.0, int max_iter = 100000, double rewire_r = 20.0,
+                  double goal_bias = 0.1, double anchor_radius = 30.0)
+        : step_size_(step_size), max_iter_(max_iter), rewire_r_(rewire_r),goal_bias_(goal_bias), gen(std::random_device{}()){}
 
     std::vector<cv::Point> plan() override;
 
@@ -29,6 +30,8 @@ private:
     int max_iter_;
 
     double rewire_r_;
+
+    double goal_bias_;
 
     KDTree tree_;
     std::unordered_map<cv::Point, cv::Point, PointHash> parent_map_;
@@ -49,5 +52,7 @@ private:
     bool isValidMove(const cv::Point& start, const cv::Point& end);
     std::vector<cv::Point> tracePath(const cv::Point& goal);
     std::vector<cv::Point> findNearNodes(const cv::Point& query, double radius);
+
+    double heuristic(const cv::Point &a, const cv::Point &b);
 };
-#endif //RRTSTARPLANNER_H
+#endif //RRTSHARPPLANNER_H
